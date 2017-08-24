@@ -1,92 +1,33 @@
-![status: inactive](https://img.shields.io/badge/status-inactive-red.svg)
+## Endpoints Frameworks v2 Python Sample
 
-This sample has been moved to [GoogleCloudPlatform/python-docs-samples](https://github.com/GoogleCloudPlatform/python-docs-samples).
+This demonstrates how to use Google Cloud Endpoints Frameworks v2 on Google App Engine Standard Environment using Python.
 
-## Hello Endpoints Python
+## Setup
 
-A Python "Hello World" skeleton application for Google App Engine using
-[Google Cloud Endpoints][1].
+Create a `lib` directory in which to install the Endpoints Frameworks v2 library. For more info, see [Installing a library](https://cloud.google.com/appengine/docs/python/tools/using-libraries-python-27#installing_a_library).
 
-See our other [Google Cloud Platform github
-repos](https://github.com/GoogleCloudPlatform) for sample applications and
-scaffolding for other Python frameworks and use cases.
+Install the Endpoints Frameworks v2 library:
 
-## Run Locally
-1. Install the [App Engine Python SDK](https://developers.google.com/appengine/downloads).
-See the README file for directions. You'll need Python 2.7 installed too.
+    $ pip install -t lib -r requirements.txt
 
-1. Clone this repo with
+## Deploying to Google App Engine
 
-   ```
-   git clone https://github.com/GoogleCloudPlatform/appengine-endpoints-helloendpoints-python.git
-   ```
-1. Run the application locally with
+Generate a swagger file by running: `python lib/endpoints/endpointscfg.py get_swagger_spec main.EchoApi --hostname echo-api.endpoints.[YOUR-PROJECT-ID].cloud.goog`
 
-   ```
-   cd appengine-endpoints-helloendpoints-python
-   dev_appserver.py .
-   ```
-1. Test your Endpoints by visiting the Google APIs Explorer (by default [http://localhost:8000/_ah/api/explorer](http://localhost:8000/_ah/api/explorer))
+Remember to replace [YOUR-PROJECT-ID] with your project ID.
 
-## Deploy
-To deploy the application:
+To set up OAuth2, replace `your-oauth-client-id.com` under `audiences` in the annotation for `get_user_email` with your OAuth2 client ID. If you want to use Google OAuth2 Playground, use `407408718192.apps.googleusercontent.com` as your audience. To generate a JWT, go to the following address: `https://developers.google.com/oauthplayground`.
 
-1. Use the [Admin Console](https://appengine.google.com) to create an app.
-1. Replace `your-app-id` in `app.yaml` with the app id from the previous step.
- 1. Optional step: These sub steps are not required but will enable the "Authenticated
- Greeting" functionality.
-     1. Update the values in `helloworld_api.py` to
- reflect the respective client IDs you have registered in the [console][3].
-     1. Update the value of `google.devrel.samples.helloendpoints.CLIENT_ID` in
- `static/js/base.js` to reflect the web client ID you have registered in the
- [console][3].
-1. [Deploy the application](https://developers.google.com/appengine/docs/python/tools/uploadinganapp)
-   with:
+Deploy the generated swagger spec to Google Cloud Service Management: `gcloud alpha service-management deploy echo-v1_swagger.json`
 
-   ```
-   appcfg.py --oauth2 update .
-   ```
-   or use the App Engine Launcher.
-1. Congratulations! Your application is now live at `your-app-id`.appspot.com.
-1. [Generate the Android client library][2] with:
+The command returns several lines of information, including a line similar to the following:
 
-   ```
-   endpointscfg.py get_client_lib java -o . helloworld_api.HelloWorldApi
-   ```
-   
-   or for Gradle projects:
-   ```   
-   endpointscfg.py get_client_lib java -bs gradle -o . helloworld_api.HelloWorldApi
-   ```
-   The library will connect to your deployed application. If you change your app ID, you must regenerate the client library.
+   Service Configuration [2016-08-01r0] uploaded for service "echo-api.endpoints.[YOUR-PROJECT-ID].cloud.goog"
 
-## Next Steps
-This skeleton includes TODO markers you can search for to determine some of the
-basic areas you will want to customize.
+Open the `app.yaml` file and in the `env_variables` section, replace [YOUR-PROJECT-ID] in `echo-api.endpoints.[YOUR-PROJECT-ID].cloud.goog` with your project ID. This is your Endpoints service name. Then replace `2016-08-01r0` with your uploaded service management configuration.
 
-### Consuming APIs
-Building the backend is one part of Cloud Endpoints. See how you can consume
-your APIs from [Android](https://developers.google.com/appengine/docs/python/endpoints/consume_android),
-[iOS](https://developers.google.com/appengine/docs/python/endpoints/consume_ios), or the
-[web](https://developers.google.com/appengine/docs/python/endpoints/consume_js) by reading the documentation.
+Then, deploy the sample using `gcloud`:
 
-### Installing Libraries
-See the [third-party
-libraries](https://developers.google.com/appengine/docs/python/tools/libraries27)
-page for libraries that are already included in the SDK. To include SDK
-libraries, add them in your app.yaml file. Other than libraries included in
-the SDK, only pure python libraries may be added to an App Engine project.
+    $ gcloud app deploy
 
-### Feedback
-Star this repo if you found it useful. Use the github issue tracker to give
-feedback on this repo and to ask for scaffolds for other use cases.
-
-## Contributing changes
-See [CONTRIB.md](CONTRIB.md)
-
-## Licensing
-See [LICENSE](LICENSE)
-
-[1]: https://developers.google.com/appengine/docs/python/endpoints/
-[2]: https://developers.google.com/appengine/docs/python/endpoints/gen_clients
-[3]: https://cloud.google.com/console
+Once deployed, you can access the application at https://your-service.appspot.com

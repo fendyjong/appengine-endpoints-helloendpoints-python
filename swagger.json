@@ -1,0 +1,130 @@
+{
+  "basePath": "/_ah/api",
+  "consumes": [
+    "application/json"
+  ],
+  "definitions": {
+    "MainGreeting": {
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "MainGreetingCollection": {
+      "properties": {
+        "items": {
+          "description": "Greeting that stores a message.",
+          "items": {
+            "$ref": "#/definitions/MainGreeting"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "ProtorpcMessagesCombinedContainer": {
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "times": {
+          "format": "int32",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "times"
+      ],
+      "type": "object"
+    }
+  },
+  "host": "artindo.endpoints.sandbox-a56c2.cloud.goog",
+  "info": {
+    "title": "greeting",
+    "version": "v1"
+  },
+  "paths": {
+    "/greeting/v1/greetings": {
+      "get": {
+        "operationId": "GreetingApi_listGreetings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/MainGreetingCollection"
+            }
+          }
+        }
+      }
+    },
+    "/greeting/v1/greetings/multiply/{times}": {
+      "post": {
+        "operationId": "GreetingApi_multiplyGreeting",
+        "parameters": [
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "times",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/ProtorpcMessagesCombinedContainer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/MainGreeting"
+            }
+          }
+        }
+      }
+    },
+    "/greeting/v1/greetings/{id}": {
+      "get": {
+        "operationId": "GreetingApi_getGreeting",
+        "parameters": [
+          {
+            "format": "int32",
+            "in": "path",
+            "name": "id",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A successful response",
+            "schema": {
+              "$ref": "#/definitions/MainGreeting"
+            }
+          }
+        }
+      }
+    }
+  },
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "google_id_token": {
+      "authorizationUrl": "",
+      "flow": "implicit",
+      "type": "oauth2",
+      "x-google-issuer": "accounts.google.com",
+      "x-google-jwks_uri": "https://www.googleapis.com/oauth2/v1/certs"
+    }
+  },
+  "swagger": "2.0"
+}
